@@ -1,7 +1,5 @@
 # Organization Management Service
 
-A multi-tenant backend service for managing organizations with dynamic MongoDB collections. Built with FastAPI and MongoDB.
-
 ## Features
 
 - **Multi-tenant Architecture**: Master database for metadata with dynamic collections per organization
