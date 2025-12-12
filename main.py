@@ -44,8 +44,9 @@ async def lifespan(app: FastAPI):
         logger.info("✅ Database initialized and indexes created")
         
     except Exception as e:
-        logger.error(f"❌ Startup error: {str(e)}")
-        raise
+        logger.error(f"❌ MongoDB connection error: {str(e)}")
+        # DO NOT RAISE - let service start in degraded mode
+        # This allows health endpoint to show "disconnected" status
     
     yield
     
@@ -106,19 +107,16 @@ async def health_check():
             "service": "Organization Management Service"
         }
     except Exception as e:
-        logger.error(f"Health check failed: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"Service unhealthy: {str(e)}"
+        logger.warning(f"⚠️ Health check: Database disconnected: {str(e)}")
+        return JSONResponse(
+            status_code=200,  # Still return 200, but show disconnected
+            content={
+                "status": "degraded",
+                "database": "disconnected",
+                "service": "Organization Management Service",
+                "error": str(e)
+            }
         )
-
-# Error handlers
-@app.exception_handler(404)
-async def not_found_handler(request, exc):
-    return JSONResponse(
-        status_code=404,
-        content={"detail": "Resource not found"}
-    )
 
 @app.exception_handler(500)
 async def internal_error_handler(request, exc):
