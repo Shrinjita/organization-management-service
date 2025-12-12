@@ -8,19 +8,19 @@
 - **RESTful APIs**: Clean, well-documented API endpoints
 - **Production Ready**: Error handling, logging, and validation
 
-## ✨ Features
+## Features
 
-- **🚀 FastAPI Backend**: High-performance API with automatic OpenAPI documentation
-- **📊 MongoDB Database**: Flexible NoSQL database for organizational data
-- **🐳 Docker Support**: Containerized deployment with Docker Compose
-- **☁️ Cloud Ready**: Easy deployment to Render (free tier)
-- **🔍 Search & Filter**: Advanced organization search capabilities
-- **✅ Input Validation**: Built-in validation with Pydantic
-- **🧪 Testing**: Comprehensive test suite with pytest
-- **📈 Health Checks**: Service monitoring endpoints
-- **🔐 Authentication Ready**: JWT authentication prepared
+- **FastAPI Backend**: High-performance API with automatic OpenAPI documentation
+- **MongoDB Database**: Flexible NoSQL database for organizational data
+- **Docker Support**: Containerized deployment with Docker Compose
+- **Cloud Ready**: Easy deployment to Render (free tier)
+- **Search & Filter**: Advanced organization search capabilities
+- **Input Validation**: Built-in validation with Pydantic
+- **Testing**: Comprehensive test suite with pytest
+- **Health Checks**: Service monitoring endpoints
+- **Authentication Ready**: JWT authentication prepared
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 organization-management-service/
@@ -39,7 +39,7 @@ organization-management-service/
 
 <img width="550" height="483" alt="_- visual selection (2)" src="https://github.com/user-attachments/assets/fb0d27ad-8678-491d-95c2-b41f023cfacc" />
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.9+
@@ -96,7 +96,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 - **ReDoc**: http://localhost:8000/redoc
 - **OpenAPI Schema**: http://localhost:8000/openapi.json
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build and Run
 ```bash
@@ -122,7 +122,7 @@ docker-compose logs -f
 docker-compose down
 ```
 
-## ☁️ Deploy to Render (Free)
+## Deploy to Render (Free)
 
 1. **Push code to GitHub**
 2. **Create MongoDB Atlas database** (free M0 tier)
@@ -133,7 +133,7 @@ docker-compose down
    - Add `MONGODB_URI` environment variable
 4. **Access your service**: `https://your-service.onrender.com`
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -146,7 +146,7 @@ pytest --cov=src --cov-report=html
 pytest tests/test_organizations.py -v
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 Create a `.env` file:
@@ -162,7 +162,7 @@ LOG_LEVEL=INFO
 - **Database**: MongoDB (local or Atlas)
 - **Logging**: Structured JSON logging in production
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 .
@@ -194,7 +194,7 @@ LOG_LEVEL=INFO
 └── README.md                  # This file
 ```
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -208,7 +208,7 @@ LOG_LEVEL=INFO
 - Update documentation
 - Use meaningful commit messages
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -248,7 +248,7 @@ docker-compose logs mongodb
 docker-compose logs -f
 ```
 
-## 📊 API Examples
+## API Examples
 
 ### Create Organization
 ```bash
@@ -275,7 +275,7 @@ curl http://localhost:8000/organizations
 curl "http://localhost:8000/organizations/search?industry=Technology&min_employees=100"
 ```
 
-## 🔒 Security
+## Security
 
 - Input validation with Pydantic
 - CORS middleware enabled
@@ -283,7 +283,7 @@ curl "http://localhost:8000/organizations/search?industry=Technology&min_employe
 - Secure database connections
 - Prepared for JWT authentication
 
-## 📈 Performance
+## Performance
 
 - Async database operations
 - Connection pooling
@@ -291,7 +291,7 @@ curl "http://localhost:8000/organizations/search?industry=Technology&min_employe
 - Caching ready architecture
 
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [FastAPI](https://fastapi.tiangolo.com/) for the excellent web framework
 - [MongoDB](https://www.mongodb.com/) for the database
