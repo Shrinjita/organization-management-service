@@ -1,309 +1,227 @@
 # Organization Management Service API Documentation
 
-## Base URL
-http://localhost:8000
+The Organization Management Service is a RESTful API built with FastAPI for managing organizational data with MongoDB as the database.
 
-text
+## 🌐 Base URL
+- **Local**: `http://localhost:8000`
+- **Production**: `https://your-render-url.onrender.com`
 
-## Authentication
-All endpoints except `/admin/login` require JWT authentication.
+## 🏥 Health Check
+**GET `/health`**
+Check service and database connectivity.
 
-### Headers
-Authorization: Bearer <jwt_token>
-
-text
-
-## Endpoints
-
-### 1. Authentication
-
-#### POST `/admin/login`
-Admin login to obtain JWT token.
-
-**Request Body:**
+**Response:**
 ```json
-{
-  "email": "admin@example.com",
-  "password": "SecurePass123"
-}
-Response:
-
-json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "bearer",
-  "organization_id": "6578a1b2c3d4e5f6a7b8c9d0",
-  "admin_id": "6578a1b2c3d4e5f6a7b8c9d1",
-  "organization_name": "ExampleOrg"
-}
-2. Organization Management
-POST /org/create
-Create a new organization.
-
-Request Body:
-
-json
-{
-  "organization_name": "ExampleOrg",
-  "email": "admin@example.com",
-  "password": "SecurePass123"
-}
-Response:
-
-json
-{
-  "id": "6578a1b2c3d4e5f6a7b8c9d0",
-  "organization_name": "ExampleOrg",
-  "collection_name": "org_exampleorg",
-  "admin_email": "admin@example.com",
-  "admin_id": "6578a1b2c3d4e5f6a7b8c9d1",
-  "created_at": "2024-01-01T12:00:00Z"
-}
-GET /org/get
-Get organization details by name.
-
-Query Parameters:
-
-org_name: Organization name
-
-Response:
-
-json
-{
-  "id": "6578a1b2c3d4e5f6a7b8c9d0",
-  "organization_name": "ExampleOrg",
-  "collection_name": "org_exampleorg",
-  "admin_email": "admin@example.com",
-  "created_at": "2024-01-01T12:00:00Z",
-  "updated_at": "2024-01-01T12:00:00Z"
-}
-PUT /org/update
-Update organization details.
-
-Request Body:
-
-json
-{
-  "organization_name": "ExampleOrg",
-  "new_organization_name": "UpdatedOrg",
-  "email": "newadmin@example.com",
-  "password": "NewPass123"
-}
-Response:
-
-json
-{
-  "message": "Organization updated successfully",
-  "organization_name": "UpdatedOrg",
-  "collection_name": "org_updatedorg",
-  "admin_email": "newadmin@example.com"
-}
-DELETE /org/delete
-Delete an organization.
-
-Request Body:
-
-json
-{
-  "organization_name": "ExampleOrg"
-}
-Response:
-
-json
-{
-  "message": "Organization 'ExampleOrg' deleted successfully"
-}
-3. Health & System
-GET /
-Root endpoint - API health check.
-
-Response:
-
-json
-{
-  "message": "Organization Management Service is running",
-  "status": "healthy",
-  "version": "1.0.0",
-  "docs": "/docs",
-  "redoc": "/redoc"
-}
-GET /health
-Health check with database connectivity.
-
-Response:
-
-json
 {
   "status": "healthy",
   "database": "connected",
   "service": "Organization Management Service"
 }
-Error Responses
-400 Bad Request
-json
+```
+
+## 🏢 Organizations Endpoints
+
+### 📋 List Organizations
+**GET `/organizations`**
+Retrieve all organizations with optional pagination.
+
+**Query Parameters:**
+- `skip` (optional): Number of records to skip (default: 0)
+- `limit` (optional): Maximum records to return (default: 100)
+
+**Response (200 OK):**
+```json
+[
+  {
+    "_id": "string",
+    "name": "string",
+    "description": "string",
+    "industry": "string",
+    "founded_year": 2023,
+    "employee_count": 50,
+    "location": "string",
+    "website": "string",
+    "created_at": "2023-12-13T10:30:00Z",
+    "updated_at": "2023-12-13T10:30:00Z"
+  }
+]
+```
+
+### ➕ Create Organization
+**POST `/organizations`**
+Create a new organization.
+
+**Request Body:**
+```json
 {
-  "detail": "Organization 'ExampleOrg' already exists"
+  "name": "Acme Corp",
+  "description": "A technology company",
+  "industry": "Technology",
+  "founded_year": 2020,
+  "employee_count": 150,
+  "location": "San Francisco, CA",
+  "website": "https://acme.example.com"
 }
-401 Unauthorized
-json
+```
+
+**Response (201 Created):**
+```json
 {
-  "detail": "Invalid authentication credentials"
+  "message": "Organization created successfully",
+  "organization_id": "507f1f77bcf86cd799439011"
 }
-403 Forbidden
-json
+```
+
+### 🔍 Get Organization by ID
+**GET `/organizations/{organization_id}`**
+Retrieve a specific organization.
+
+**Response (200 OK):**
+```json
 {
-  "detail": "Access denied to this organization"
+  "_id": "string",
+  "name": "string",
+  "description": "string",
+  "industry": "string",
+  "founded_year": 2023,
+  "employee_count": 50,
+  "location": "string",
+  "website": "string",
+  "created_at": "2023-12-13T10:30:00Z",
+  "updated_at": "2023-12-13T10:30:00Z"
 }
-404 Not Found
-json
+```
+
+**Response (404 Not Found):**
+```json
 {
-  "detail": "Organization 'ExampleOrg' not found"
+  "detail": "Organization not found"
 }
-500 Internal Server Error
-json
+```
+
+### ✏️ Update Organization
+**PUT `/organizations/{organization_id}`**
+Update an existing organization.
+
+**Request Body:**
+```json
 {
-  "detail": "Internal server error"
+  "name": "Updated Name",
+  "description": "Updated description",
+  "industry": "Updated Industry",
+  "employee_count": 200
 }
-Rate Limiting
-Currently not implemented. In production, consider implementing rate limiting.
+```
 
-Versioning
-API versioning will be implemented via URL path:
+**Response (200 OK):**
+```json
+{
+  "message": "Organization updated successfully"
+}
+```
 
-v1/ for version 1 (current)
+### 🗑️ Delete Organization
+**DELETE `/organizations/{organization_id}`**
+Delete an organization.
 
-Future versions will use v2/, v3/, etc.
+**Response (200 OK):**
+```json
+{
+  "message": "Organization deleted successfully"
+}
+```
 
-text
+## 🔍 Search & Filter
+**GET `/organizations/search`**
+Search organizations with various filters.
 
-## **Step 52: Create architecture diagram file**
-**Action:** Create architecture diagram
-**VS Code:** Explorer → New File → "ARCHITECTURE.md"
-**Content:**
-```markdown
-# System Architecture
+**Query Parameters:**
+- `name` (optional): Partial name match
+- `industry` (optional): Exact industry match
+- `min_employees` (optional): Minimum employee count
+- `max_employees` (optional): Maximum employee count
+- `location` (optional): Partial location match
 
-## High-Level Architecture
-┌─────────────────────────────────────────────────────────────┐
-│ Client Applications │
-│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
-│ │ Web App │ │ Mobile App │ │ CLI Tool │ │
-│ └──────┬──────┘ └──────┬──────┘ └──────┬──────┘ │
-└─────────┼─────────────────┼─────────────────┼───────────────┘
-│ │ │
-└─────────────────┼─────────────────┘
-│
-┌──────────────────▼──────────────────┐
-│ Load Balancer (NGINX) │
-└──────────────────┬──────────────────┘
-│
-┌──────────────────▼──────────────────┐
-│ FastAPI Application Servers │
-│ ┌─────────────┐ ┌─────────────┐ │
-│ │ Worker 1 │ │ Worker N │ │
-│ └──────┬──────┘ └──────┬──────┘ │
-└─────────┼─────────────────┼─────────┘
-│ │
-┌─────────▼─────────────────▼─────────┐
-│ Master Database │
-│ (MongoDB Cluster) │
-│ ┌──────────────────────────────┐ │
-│ │ organizations collection │ │
-│ │ admin_users collection │ │
-│ │ org_* dynamic collections │ │
-│ └──────────────────────────────┘ │
-└─────────────────────────────────────┘
+## 📊 Statistics
+**GET `/organizations/stats`**
+Get organization statistics.
 
-text
+**Response:**
+```json
+{
+  "total_organizations": 150,
+  "industries": ["Technology", "Healthcare", "Finance"],
+  "average_employee_count": 85.5,
+  "latest_organization": "2023-12-13T10:30:00Z"
+}
+```
 
-## Component Details
+## 🧪 Testing
+**GET `/test/health`**
+Test endpoint for health checks.
 
-### 1. FastAPI Application Layer
-- **Framework**: FastAPI with async/await support
-- **Authentication**: JWT-based with HTTP Bearer tokens
-- **Validation**: Pydantic models for request/response validation
-- **Middleware**: CORS, Logging, Error Handling
-- **Documentation**: Auto-generated OpenAPI/Swagger docs
+**Response:**
+```json
+{
+  "status": "test_healthy",
+  "timestamp": "2023-12-13T10:30:00Z"
+}
+```
 
-### 2. Database Layer
-- **Primary Database**: MongoDB (document-oriented)
-- **Master Database**: Contains metadata and admin credentials
-- **Dynamic Collections**: Created per organization with pattern `org_<name>`
-- **Indexes**: Optimized for frequent queries
+## 📚 API Documentation
+- **Interactive API Docs**: `/docs` (Swagger UI)
+- **Alternative Docs**: `/redoc` (ReDoc)
+- **OpenAPI Schema**: `/openapi.json`
 
-### 3. Service Layer
-- **OrganizationService**: Business logic for organization management
-- **AdminService**: Authentication and admin management
-- **ValidationService**: Input validation and sanitization
+## 🔒 Authentication & Authorization
+*Note: Currently uses basic API key authentication. Future versions will implement JWT.*
 
-### 4. Data Flow
+## 🚨 Error Responses
+All endpoints may return:
 
-#### Organization Creation:
-1. Client sends POST `/org/create` with organization details
-2. Service validates input and checks for duplicates
-3. Creates admin user record with hashed password
-4. Creates organization metadata record
-5. Creates dynamic collection for the organization
-6. Returns success response with organization ID
+**400 Bad Request:**
+```json
+{
+  "detail": "Validation error description"
+}
+```
 
-#### Admin Authentication:
-1. Client sends POST `/admin/login` with credentials
-2. Service verifies email and password hash
-3. Generates JWT token with admin and organization info
-4. Returns token for subsequent authenticated requests
+**500 Internal Server Error:**
+```json
+{
+  "detail": "Internal server error occurred"
+}
+```
 
-## Scalability Considerations
+## 📈 Rate Limiting
+- Free tier: 100 requests/hour per IP
+- Production: 1000 requests/hour per API key
 
-### Horizontal Scaling
-- Stateless application servers allow easy scaling
-- MongoDB sharding for database scalability
-- Load balancer distributes traffic across instances
+## 🗂️ Data Models
 
-### Multi-Tenancy
-- Each organization gets isolated data collection
-- No data mixing between organizations
-- Collection naming convention prevents conflicts
+### Organization
+```typescript
+{
+  _id: ObjectId;
+  name: string;
+  description: string;
+  industry: string;
+  founded_year: number;
+  employee_count: number;
+  location: string;
+  website: string;
+  created_at: ISO8601;
+  updated_at: ISO8601;
+}
+```
 
-### Security
-- Password hashing with bcrypt
-- JWT tokens for stateless authentication
-- Input validation and sanitization
-- HTTPS enforcement in production
+### API Health
+```typescript
+{
+  status: "healthy" | "unhealthy";
+  database: "connected" | "disconnected";
+  service: string;
+  timestamp: ISO8601;
+}
+```
 
-## Deployment Options
-
-### Option 1: Docker Compose (Development)
-docker-compose up -d
-
-text
-
-### Option 2: Kubernetes (Production)
-- Deployment with multiple replicas
-- ConfigMaps for environment variables
-- Secrets for sensitive data
-- Horizontal Pod Autoscaler
-
-### Option 3: Serverless
-- AWS Lambda with API Gateway
-- MongoDB Atlas for managed database
-- Reduced operational overhead
-
-## Monitoring & Observability
-
-### Logging
-- Structured JSON logs
-- Request/response logging
-- Error tracking
-- Performance metrics
-
-### Metrics
-- Request rate and latency
-- Database query performance
-- Memory and CPU usage
-- Error rates
-
-### Alerting
-- Service downtime
-- High error rates
-- Performance degradation
-- Security incidents
