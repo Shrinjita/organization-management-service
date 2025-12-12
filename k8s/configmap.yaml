@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: org-management
+data:
+  master-db-name: "organization_master"
+  jwt-algorithm: "HS256"
+  access-token-expire-minutes: "30"
+  debug: "false"
+  bcrypt-rounds: "12"
+  app-name: "Organization Management Service"

@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongodb-backup
+  namespace: org-management
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: mongo:6
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+              mongodump \
+              --uri="mongodb://admin:$(MONGODB_PASSWORD)@mongodb.org-management.svc.cluster.local:27017" \
+              --out="/backups/$(date +%Y%m%d_%H%M%S)"
+            env:
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secrets
+                  key: password
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backups
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backups-pvc

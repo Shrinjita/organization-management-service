@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: organization-service
+  namespace: org-management
+  labels:
+    app: organization-service
+spec:
+  selector:
+    app: organization-service
+  ports:
+  - port: 80
+    targetPort: 8000
+    name: http
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: organization-service-nodeport
+  namespace: org-management
+  labels:
+    app: organization-service
+spec:
+  selector:
+    app: organization-service
+  ports:
+  - port: 8000
+    targetPort: 8000
+    nodePort: 30080
+    name: http
+  type: NodePort
