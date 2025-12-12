@@ -65,3 +65,5 @@ class MongoManager:
             cls._client = None
             cls._db = None
             logger.info("🔌 MongoDB connection closed")
+
+mongo_manager = MongoManager()
