@@ -8,286 +8,290 @@
 - **RESTful APIs**: Clean, well-documented API endpoints
 - **Production Ready**: Error handling, logging, and validation
 
+## Features
+
+- **FastAPI Backend**: High-performance API with automatic OpenAPI documentation
+- **MongoDB Database**: Flexible NoSQL database for organizational data
+- **Docker Support**: Containerized deployment with Docker Compose
+- **Cloud Ready**: Easy deployment to Render (free tier)
+- **Search & Filter**: Advanced organization search capabilities
+- **Input Validation**: Built-in validation with Pydantic
+- **Testing**: Comprehensive test suite with pytest
+- **Health Checks**: Service monitoring endpoints
+- **Authentication Ready**: JWT authentication prepared
+
 ## Architecture
-
-<img width="550" height="483" alt="_- visual selection (2)" src="https://github.com/user-attachments/assets/fb0d27ad-8678-491d-95c2-b41f023cfacc" />
-
-## 📋 Prerequisites
-
-- Python 3.9 or higher
-- MongoDB (local installation or MongoDB Atlas)
-- pip (Python package manager)
-- Git (for version control)
-
-## 🚀 Quick Start
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd organization-management-service
-```
-
-### 2. Set Up Virtual Environment
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure Environment Variables
-
-```bash
-# Copy environment template
-cp .env.example .env
-
-# Edit .env file with your configuration
-# Required: MONGODB_URI, JWT_SECRET_KEY
-```
-
-Example `.env` file:
-```env
-MONGODB_URI=mongodb://localhost:27017
-MASTER_DB_NAME=organization_master
-JWT_SECRET_KEY=your-secret-key-change-in-production
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-DEBUG=True
-```
-
-### 5. Start MongoDB (if using local MongoDB)
-
-```bash
-# macOS (using Homebrew)
-brew services start mongodb-community
-
-# Ubuntu/Debian
-sudo systemctl start mongod
-
-# Windows
-net start MongoDB
-```
-
-### 6. Run the Application
-
-```bash
-# Development mode with auto-reload
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### 7. Access the Application
-
-- **API Documentation (Swagger UI)**: http://localhost:8000/docs
-- **Alternative Documentation (ReDoc)**: http://localhost:8000/redoc
-- **Health Check**: http://localhost:8000/health
-
-## 📁 Project Structure
 
 ```
 organization-management-service/
-├── src/
-│   ├── config/           # Configuration settings
-│   ├── db/              # Database connection and models
-│   ├── models/          # Data models and schemas
-│   ├── schemas/         # Pydantic schemas
-│   ├── services/        # Business logic
-│   ├── routes/          # API routes
-│   ├── utils/           # Utilities (password, JWT, validators)
-│   └── middleware/      # Custom middleware
-├── tests/               # Test files
-├── logs/                # Application logs
-├── requirements.txt     # Python dependencies
-├── .env.example         # Environment variables template
-├── .gitignore          # Git ignore rules
-├── main.py             # Application entry point
+├── src/                    # Source code
+│   ├── models/            # Pydantic models
+│   ├── routes/            # API endpoints
+│   ├── services/          # Business logic
+│   └── database.py        # Database connection
+├── tests/                 # Test suite
+├── main.py               # FastAPI application
+├── requirements.txt      # Python dependencies
+├── Dockerfile           # Container configuration
+├── docker-compose.yml   # Multi-container setup
 └── README.md           # This file
 ```
 
-## 🔧 API Endpoints
+## Quick Start
 
-### Authentication
-- `POST /admin/login` - Admin login (returns JWT token)
-- `GET /admin/verify` - Verify JWT token
+### Prerequisites
+- Python 3.9+
+- Docker & Docker Compose (for containerized deployment)
+- Git
 
-### Organization Management
-- `POST /org/create` - Create new organization
-- `GET /org/get?organization_name={name}` - Get organization details
-- `PUT /org/update` - Update organization details
-- `DELETE /org/delete` - Delete organization
+### Local Development
 
-### Health & Monitoring
-- `GET /health` - Health check endpoint
-- `GET /metrics` - Application metrics
-
-## 🧪 Testing
-
-### Run All Tests
-
+#### Option 1: Using Docker (Recommended)
 ```bash
-pytest
+# Clone the repository
+git clone https://github.com/yourusername/organization-management-service.git
+cd organization-management-service
+
+# Start all services
+docker-compose up --build -d
+
+# Verify services are running
+curl http://localhost:8000/health
+# Expected: {"status":"healthy","database":"connected","service":"Organization Management Service"}
 ```
 
-### Run Specific Test Module
-
+#### Option 2: Manual Setup
 ```bash
-pytest tests/test_auth.py
-pytest tests/test_organization.py
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start MongoDB (requires Docker)
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+
+# Run the application
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Run Tests with Coverage
+## 📡 API Endpoints
 
-```bash
-pytest --cov=src --cov-report=html
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | Service health check |
+| `GET` | `/organizations` | List all organizations |
+| `POST` | `/organizations` | Create new organization |
+| `GET` | `/organizations/{id}` | Get organization by ID |
+| `PUT` | `/organizations/{id}` | Update organization |
+| `DELETE` | `/organizations/{id}` | Delete organization |
+| `GET` | `/organizations/search` | Search organizations |
+| `GET` | `/organizations/stats` | Get statistics |
 
-## 🔐 Security Features
+### Interactive Documentation
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+- **OpenAPI Schema**: http://localhost:8000/openapi.json
 
-- **Password Hashing**: bcrypt with configurable rounds
-- **JWT Tokens**: Signed tokens with expiration
-- **Input Validation**: Pydantic schemas for all inputs
-- **CORS Protection**: Configured CORS middleware
-- **Rate Limiting**: Ready for implementation
-- **SQL Injection Protection**: MongoDB ObjectId validation
-- **Environment Variables**: Sensitive data in environment
+## Docker Deployment
 
-## 📊 Database Design
-
-### Master Database Collections
-
-1. **organizations**
-   - `_id`: ObjectId
-   - `organization_name`: string (unique)
-   - `collection_name`: string (unique)
-   - `admin_email`: string (unique)
-   - `admin_user_id`: ObjectId
-   - `created_at`: datetime
-   - `updated_at`: datetime
-
-2. **admin_users**
-   - `_id`: ObjectId
-   - `email`: string (unique)
-   - `hashed_password`: string
-   - `organization_name`: string
-   - `created_at`: datetime
-   - `updated_at`: datetime
-   - `is_active`: boolean
-
-### Dynamic Collections
-- Created per organization: `org_{organization_name_sanitized}`
-- Initialized with basic schema
-- Can store organization-specific data
-
-## 🚀 Deployment
-
-### Using Docker
-
+### Build and Run
 ```bash
 # Build Docker image
-docker build -t organization-management-service .
+docker build -t organization-service .
 
 # Run container
-docker run -p 8000:8000 --env-file .env organization-management-service
+docker run -p 8000:8000 --env-file .env organization-service
 ```
 
-### Manual Deployment
-
-1. **Set up production environment variables**
-2. **Use production WSGI server**:
-   ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
-   ```
-3. **Set up reverse proxy** (Nginx/Apache)
-4. **Configure SSL/TLS** for HTTPS
-5. **Set up monitoring and logging**
-
-## 🔄 Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017` |
-| `MASTER_DB_NAME` | Master database name | `organization_master` |
-| `JWT_SECRET_KEY` | Secret for JWT token signing | Required |
-| `JWT_ALGORITHM` | JWT signing algorithm | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token expiration time | `30` |
-| `DEBUG` | Enable debug mode | `False` |
-| `BCRYPT_ROUNDS` | Password hashing rounds | `12` |
-
-## 📈 Monitoring & Logging
-
-- **Application logs**: `logs/app.log`
-- **Error logs**: `logs/error.log`
-- **Access logs**: `logs/access.log`
-- **Health endpoint**: `/health`
-- **Metrics endpoint**: `/metrics`
-
-## 🔍 API Examples
-
-### Create Organization
+### Docker Compose
 ```bash
-curl -X POST "http://localhost:8000/org/create" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "organization_name": "TechCorp",
-    "email": "admin@techcorp.com",
-    "password": "SecurePass123"
-  }'
+# Development (with hot reload)
+docker-compose up --build
+
+# Production
+docker-compose -f docker-compose.yml up --build -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
 ```
 
-### Admin Login
+## Deploy to Render (Free)
+
+1. **Push code to GitHub**
+2. **Create MongoDB Atlas database** (free M0 tier)
+3. **Deploy to Render**:
+   - Sign up at [render.com](https://render.com)
+   - New Web Service → Connect GitHub repo
+   - Environment: Docker, Plan: Free
+   - Add `MONGODB_URI` environment variable
+4. **Access your service**: `https://your-service.onrender.com`
+
+## Testing
+
 ```bash
-curl -X POST "http://localhost:8000/admin/login" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@techcorp.com",
-    "password": "SecurePass123"
-  }'
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=src --cov-report=html
+
+# Run specific test file
+pytest tests/test_organizations.py -v
 ```
 
-### Get Organization (with authentication)
-```bash
-curl -X GET "http://localhost:8000/org/get?organization_name=TechCorp" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+## Configuration
+
+### Environment Variables
+Create a `.env` file:
+```env
+MONGODB_URI=mongodb://localhost:27017/organization_db
+DATABASE_NAME=organization_db
+DEBUG=True
+LOG_LEVEL=INFO
 ```
 
-## 🐛 Troubleshooting
+### Application Settings
+- **Port**: 8000 (configurable via `PORT` env variable)
+- **Database**: MongoDB (local or Atlas)
+- **Logging**: Structured JSON logging in production
+
+## Project Structure
+
+```
+.
+├── src/
+│   ├── __init__.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── organization.py    # Organization Pydantic models
+│   │   └── response.py        # API response models
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── organizations.py   # Organization endpoints
+│   │   └── health.py          # Health check endpoint
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── organization_service.py  # Business logic
+│   └── database.py            # MongoDB connection setup
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py            # Test fixtures
+│   ├── test_organizations.py  # Organization tests
+│   └── test_health.py         # Health endpoint tests
+├── main.py                    # FastAPI application entry point
+├── requirements.txt           # Python dependencies
+├── Dockerfile                 # Container definition
+├── docker-compose.yml         # Multi-service setup
+├── pytest.ini                 # Test configuration
+├── .env.example               # Environment template
+└── README.md                  # This file
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Follow PEP 8 style guide
+- Write tests for new features
+- Update documentation
+- Use meaningful commit messages
+
+## Troubleshooting
 
 ### Common Issues
 
-1. **MongoDB connection failed**
-   - Ensure MongoDB is running: `mongod --version`
-   - Check connection string in `.env` file
-   - Test connection: `mongosh "your_connection_string"`
+**Port 8000 already in use:**
+```bash
+# Find process using port 8000
+sudo lsof -i :8000
+# Kill the process
+sudo kill -9 <PID>
+```
 
-2. **Port already in use**
-   ```bash
-   # Find process using port 8000
-   lsof -i :8000
-   # Kill the process
-   kill -9 <PID>
-   ```
+**Cannot connect to MongoDB:**
+```bash
+# Check if MongoDB is running
+docker ps | grep mongo
+# Start MongoDB if not running
+docker start mongodb
+```
 
-3. **Module not found errors**
-   ```bash
-   # Reinstall dependencies
-   pip install -r requirements.txt --force-reinstall
-   ```
+**Docker build fails:**
+```bash
+# Clear Docker cache
+docker system prune -a
+# Rebuild
+docker-compose build --no-cache
+```
 
-4. **JWT token validation failed**
-   - Ensure `JWT_SECRET_KEY` is set and consistent
-   - Check token expiration
+### Logs
+```bash
+# Application logs
+docker-compose logs api
 
-### Logs Location
-- Application logs: `logs/app.log`
-- Error details in console when `DEBUG=True`
+# Database logs
+docker-compose logs mongodb
+
+# Follow logs in real-time
+docker-compose logs -f
+```
+
+## API Examples
+
+### Create Organization
+```bash
+curl -X POST http://localhost:8000/organizations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Tech Innovations Inc.",
+    "description": "A leading technology company",
+    "industry": "Technology",
+    "founded_year": 2018,
+    "employee_count": 250,
+    "location": "San Francisco, CA",
+    "website": "https://techinnovations.example.com"
+  }'
+```
+
+### List Organizations
+```bash
+curl http://localhost:8000/organizations
+```
+
+### Search Organizations
+```bash
+curl "http://localhost:8000/organizations/search?industry=Technology&min_employees=100"
+```
+
+## Security
+
+- Input validation with Pydantic
+- CORS middleware enabled
+- Environment-based configuration
+- Secure database connections
+- Prepared for JWT authentication
+
+## Performance
+
+- Async database operations
+- Connection pooling
+- Efficient query design
+- Caching ready architecture
+
+
+## Acknowledgments
+
+- [FastAPI](https://fastapi.tiangolo.com/) for the excellent web framework
+- [MongoDB](https://www.mongodb.com/) for the database
+- [Render](https://render.com/) for free hosting
+- [Docker](https://www.docker.com/) for containerization
