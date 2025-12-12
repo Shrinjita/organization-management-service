@@ -37,8 +37,6 @@ organization-management-service/
 └── README.md           # This file
 ```
 
-<img width="550" height="483" alt="_- visual selection (2)" src="https://github.com/user-attachments/assets/fb0d27ad-8678-491d-95c2-b41f023cfacc" />
-
 ## Quick Start
 
 ### Prerequisites
