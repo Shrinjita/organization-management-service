@@ -1,7 +1,5 @@
 # Organization Management Service
 
-## Features
-
 - **Multi-tenant Architecture**: Master database for metadata with dynamic collections per organization
 - **Secure Authentication**: JWT-based authentication with bcrypt password hashing
 - **Organization CRUD**: Create, read, update, and delete organizations
